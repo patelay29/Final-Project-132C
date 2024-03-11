@@ -73,7 +73,11 @@ all_images = np.array(all_images)
 # Save the numpy array to a file
 np.save('all_images.npy', all_images)
 
+# Convert the list of descriptors to a numpy array
+description = np.array(description)
 
+# Save the numpy array to a file
+np.save('description.npy', description)
         
 
         
