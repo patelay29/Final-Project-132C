@@ -1,4 +1,4 @@
-
+# Data Trimming
 # %%
 import nibabel as nib
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ import pandas as pd
 import os 
 
 
-file_path = 'disc1/OAS1_0001_MR1/PROCESSED/MPRAGE/SUBJ_111/OAS1_0001_MR1_mpr_n4_anon_sbj_111.img'
+file_path = 'disc2/OAS1_0043_MR1/PROCESSED/MPRAGE/SUBJ_111/OAS1_0043_MR1_mpr_n4_anon_sbj_111.img'
 img = nib.load(file_path)
 
 data = img.get_fdata()
@@ -38,13 +38,13 @@ df = pd.read_excel(excel_file)
 desired_file_names = df['ID'].tolist()
 
 # Get list of files in the disc1 folder
-file_list = os.listdir('disc1')
+file_list = os.listdir('disc2')
 
-all_images = []
-description = []
+all_images2 = []
+description2 = []
 
 for patientID in range(1,len(file_list)+1):
-    file_path = f'disc1/OAS1_{str(patientID).zfill(4)}_MR1/PROCESSED/MPRAGE/SUBJ_111/OAS1_{str(patientID).zfill(4)}_MR1_mpr_n4_anon_sbj_111.img'
+    file_path = f'disc2/OAS1_{str(patientID+42).zfill(4)}_MR1/PROCESSED/MPRAGE/SUBJ_111/OAS1_{str(patientID+42).zfill(4)}_MR1_mpr_n4_anon_sbj_111.img'
     
     if file_list[patientID-1] in desired_file_names and os.path.exists(file_path):
         print(file_list[patientID-1])
@@ -53,7 +53,7 @@ for patientID in range(1,len(file_list)+1):
         data = img.get_fdata()
         slice_idx = data.shape[2] // 2
         slice_data = data[:, :, slice_idx, 0]
-        all_images.append(slice_data)
+        all_images2.append(slice_data)
             # Find the corresponding row in the Excel spreadsheet
         row = df.loc[df['ID'] == file_list[patientID-1]]
         
@@ -65,40 +65,22 @@ for patientID in range(1,len(file_list)+1):
         
         # Append the descriptors to the corresponding image
         # (Assuming all_images and desired_file_names have the same order)
-        description.append([age, gender, education, cdr])
+        description2.append([age, gender, education, cdr])
+
+
 
 # Convert the list of images to a numpy array
-all_images = np.array(all_images)
+all_images2 = np.array(all_images2)
+
+reshaped_array = all_images2.reshape(-1, 65536)
 
 # Save the numpy array to a file
-np.save('all_images.npy', all_images)
+np.save('all_images2.npy', all_images2)
 
+# Convert the list of descriptors to a numpy array
+description2 = np.array(description2)
 
-        
-
-        
-
-    
-
+# Save the numpy array to a file
+np.save('description2.npy', description2)
 # %%
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
