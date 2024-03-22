@@ -142,8 +142,8 @@ plt.show()
 pca10 = PCA(n_components=6)
 mri_scans_pca10 = pca10.fit_transform(mri_scans_scaled)
 # Alternatively, you can use t-SNE for visualization with reduced perplexity
-tsne = TSNE(n_components=2, perplexity=5, random_state=42)  # Adjust the perplexity value as needed
-mri_scans_tsne = tsne.fit_transform(mri_scans_pca10)
+tsne = TSNE(n_components=2, perplexity=15, random_state=42)  # Adjust the perplexity value as needed
+mri_scans_tsne = tsne.fit_transform(reshaped_array)
 
 
 
@@ -174,26 +174,51 @@ plt.show()
 ground_truth_labels_cdr = [entry[3] for entry in description]
 ground_truth_labels_cdr = np.array(ground_truth_labels_cdr).astype(float)
 
-# Visualize the ground truth using PCA
+# List of distinct colors for colorblind-friendly plots
+colorblind_friendly_colors = [
+    'blue',  # Red Base
+    'green',  # Green Base
+    'red'   # Blue Base
+]
+
+
+# Visualize the ground truth using PCA with colorblind-friendly colors
 plt.figure(figsize=(8, 6))
-for cluster_label in np.unique(ground_truth_labels_cdr):
+for i, cluster_label in enumerate(np.unique(ground_truth_labels_cdr)):
     indices = np.where(ground_truth_labels_cdr == cluster_label)
-    plt.scatter(mri_scans_pca[indices, 0], mri_scans_pca[indices, 1], label=f'CDR {cluster_label}', cmap='paired', edgecolor='k')
-plt.title('ground truth differentiation with PCA')
+    plt.scatter(mri_scans_pca[indices, 0], mri_scans_pca[indices, 1], label=f'CDR {cluster_label}', color=colorblind_friendly_colors[i], s = 100, edgecolors='k')
+plt.title('Ground Truth Differentiation with PCA')
 plt.xlabel('Principal Component 1')
 plt.ylabel('Principal Component 2')
 plt.legend()
 plt.show()
 
+# Plot between -100 and 100 for the first two principal components
 plt.figure(figsize=(8, 6))
-for cluster_label in np.unique(ground_truth_labels_cdr):
+for i, cluster_label in enumerate(np.unique(ground_truth_labels_cdr)):
     indices = np.where(ground_truth_labels_cdr == cluster_label)
-    plt.scatter(mri_scans_tsne[indices, 0], mri_scans_tsne[indices, 1], label=f'CDR {cluster_label}', cmap='tab10', edgecolor='k')
+    plt.scatter(mri_scans_pca[indices, 0], mri_scans_pca[indices, 1], label=f'CDR {cluster_label}', color=colorblind_friendly_colors[i], s = 100, edgecolors='k')
+plt.title('Ground Truth Differentiation with PCA')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.xlim(-100, 100)
+plt.ylim(-100, 100)
+plt.legend()
+plt.show()
+
+plt.figure(figsize=(8, 6))
+for i, cluster_label in enumerate(np.unique(ground_truth_labels_cdr)):
+    indices = np.where(ground_truth_labels_cdr == cluster_label)
+    plt.scatter(mri_scans_tsne[indices, 0], mri_scans_tsne[indices, 1], label=f'CDR {cluster_label}', color=colorblind_friendly_colors[i], s = 100, edgecolors='k')
 plt.title('ground truth differentiation with t-SNE')
 plt.xlabel('t-SNE Dimension 1')
 plt.ylabel('t-SNE Dimension 2')
 plt.legend()
 plt.show()
+
+
+
+
 
 
 # %%
